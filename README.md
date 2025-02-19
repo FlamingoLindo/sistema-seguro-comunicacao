@@ -1,1 +1,1 @@
-# istema-seguro-comunicacao
+# sistema-seguro-comunicacao
