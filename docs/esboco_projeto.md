@@ -15,6 +15,12 @@ Implementar **criptografia simétrica (AES)**, **criptografia assimétrica (RSA)
 # Fluxo básico do sistema
 
 - Usuário faz **cadastro** (senha armazenada com bcrypt).
+    - E-mail: string, precisa ter "@dominio.com".
+    - Senha: string, 8 dígitos.
+
 - Usuário faz **login** (autenticado via JWT).
+    - E-mail
+    - Senha
+
 - Usuário envia uma **mensagem criptografada com AES**.
 - Apenas o destinatário correto pode **descriptografar com sua chave RSA**.
