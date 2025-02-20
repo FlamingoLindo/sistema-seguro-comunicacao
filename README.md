@@ -5,9 +5,12 @@
 Engenharia de Software - 7 B
 
 Vitor Ferrerira - 11221100958
-Bryan
-Lucas Lizot
-Carlos Henrique
+
+Bryan -
+
+Lucas Lizot -
+
+Carlos Henrique -
 
 ## Documentação:
 
