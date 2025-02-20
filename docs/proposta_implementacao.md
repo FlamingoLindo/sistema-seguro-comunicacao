@@ -2,30 +2,33 @@
 
 ## Bcrypt
 
-Será utilizado para criação de hash senhas
+Criação de hash senhas
 
-Versão: 4.2.1
+_Versão: 4.2.1_
 
 
 ## PyJWT
 
 Criação e leitura de tokens JWT
 
-Versão: 2.10.1
+_Versão: 2.10.1_
 
 ## Cryptography
 
-Criptografia dotipo AES e RSA
+Criptografia do tipo AES e RSA
 
-Versões: cffi-1.17.1, cryptography-44.0.1, pycparser-2.22 
+_Versão: 44.0.1_
 
 ---
 
 # Principais etapas de implementação
 
 - Cadastro de usuário → Hash de senha com bcrypt.
+
 - Login → Geração e verificação de Token JWT.
+
 - Criptografia de mensagens → Uso de AES (CBC).
+
 - Proteção da chave AES → Uso de RSA para criptografar a chave antes de armazená-la.
 
 ---
