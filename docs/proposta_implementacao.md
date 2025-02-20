@@ -3,17 +3,20 @@
 ## Bcrypt
 
 Será utilizado para criação de hash senhas
+
 Versão: 4.2.1
 
 
 ## PyJWT
 
 Criação e leitura de tokens JWT
+
 Versão: 2.10.1
 
 ## Cryptography
 
 Criptografia dotipo AES e RSA
+
 Versões: cffi-1.17.1, cryptography-44.0.1, pycparser-2.22 
 
 ---
