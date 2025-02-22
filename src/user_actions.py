@@ -2,37 +2,14 @@ import os
 import datetime
 import bcrypt
 import jwt
+from jwt.exceptions import ExpiredSignatureError
 
 from src.utils import clear_screen
-from src.messages import send_message, find_messages, find_sent_messages
+from src.messages import send_message, find_recived_messages, find_sent_messages
 from src.data import users, secret_key
 
 def is_valid_email(email):
     return "@" in email and ".com" in email
-
-def actions(user_email):
-    while True:
-        clear_screen()
-        action = input('Qual ação você deseja realizar:\n1 - Enviar mensagem\n2 - Ver mensagens\n3 - Sair\n')
-        
-        if action == '1':
-            send_message(user_email)
-            input("Pressione Enter para continuar...")
-        elif action == '2':
-            clear_screen()
-            subaction = input('Ver mensagens:\n1 - Mensagens recebidas\n2 - Mensagens enviadas\nDigite sua opção: ')
-            if subaction == '1':
-                find_messages(user_email)
-            elif subaction == '2':
-                find_sent_messages(user_email)
-            else:
-                print('Opção inválida.')
-            input("Pressione Enter para continuar...")
-        elif action == '3':
-            break
-        else:
-            print('Opção inválida.')
-            input("Pressione Enter para continuar...")
 
 def login():
     while True:
@@ -92,3 +69,40 @@ def register():
     clear_screen()
     print("Usuário cadastrado com sucesso!")
     print(users)
+
+def user_has_token(user_email):
+    if "token" in users[user_email] and users[user_email]["token"]:
+        try:
+            jwt.decode(users[user_email]["token"], secret_key, algorithms=["HS256"], options={"verify_exp": True})
+            return True
+        except ExpiredSignatureError:
+            print('Token expirado. Faça login novamente.')
+            return False
+    else:
+        print('Acesso negado. Faça login para continuar.')
+        return False
+
+def actions(user_email):
+    while True:
+        clear_screen()
+        user_has_token(user_email)
+        action = input('Qual ação você deseja realizar:\n1 - Enviar mensagem\n2 - Ver mensagens\n3 - Sair\n')
+        
+        if action == '1':
+            send_message(user_email)
+            input("Pressione Enter para continuar...")
+        elif action == '2':
+            clear_screen()
+            subaction = input('Ver mensagens:\n1 - Mensagens recebidas\n2 - Mensagens enviadas\nDigite sua opção: ')
+            if subaction == '1':
+                find_recived_messages(user_email)
+            elif subaction == '2':
+                find_sent_messages(user_email)
+            else:
+                print('Opção inválida.')
+            input("Pressione Enter para continuar...")
+        elif action == '3':
+            break
+        else:
+            print('Opção inválida.')
+            input("Pressione Enter para continuar...")
