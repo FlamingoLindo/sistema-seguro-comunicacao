@@ -1,8 +1,10 @@
 from src.utils import clear_screen
 from src.user_actions import login, register
+from src.db_functions import initialize_database
 
 def main_menu():
     while True:
+        initialize_database()
         clear_screen()
         print('Já possui login?')
         print('1 - Sim')
