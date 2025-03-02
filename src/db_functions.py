@@ -1,3 +1,8 @@
+"""
+FUNÇÕES DO BANCO DE DADOS
+Este arquivo contém as funções para manipulação do banco de dados.
+"""
+
 import os
 import sqlite3
 
@@ -7,6 +12,10 @@ from cryptography.hazmat.primitives import padding
 from src.load_key import secret_key
 
 def initialize_database(db_name="sistema_segurança.db"):
+    """
+    Função para inicializar o banco de dados.
+    Caso o banco de dados não exista, ele será criado.
+    """
     db_exists = os.path.exists(db_name)
     
     con = sqlite3.connect(db_name)
@@ -45,6 +54,9 @@ def initialize_database(db_name="sistema_segurança.db"):
     con.close()
     
 def register_user(username, email, password):
+    """
+    Função para registrar um usuário no banco de dados.
+    """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
@@ -57,6 +69,9 @@ def register_user(username, email, password):
     con.close()
     
 def get_user(email):
+    """
+    Função para buscar um usuário no banco de dados.
+    """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
@@ -75,13 +90,22 @@ def get_user(email):
     return user
 
 def update_token(token, user_id):
+    """
+    Função para atualizar o token de um usuário no banco de dados.
+    """
+
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
+
     cur.execute("UPDATE users SET token = ? WHERE id = ?", (token, user_id))
+
     con.commit()
     con.close()
     
 def attemp(email):
+    """
+    Função para atualizar a quantidade de tentativas de login de um usuário.
+    """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
     cur.execute("UPDATE users SET attempts = attempts + 1 WHERE email = ?", (email,))
@@ -94,8 +118,10 @@ def attemp(email):
     con.commit()
     con.close()
 
-
 def get_user_token(email):
+    """
+    Função para buscar o token de um usuário no banco de dados.
+    """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
@@ -112,6 +138,9 @@ MESSAGES
 """
 
 def get_all_active_users(email):
+    """
+    Função para buscar todos os usuários ativos no banco de dados.
+    """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
     
@@ -124,6 +153,9 @@ def get_all_active_users(email):
     return users
 
 def show_all_active_users(email):
+    """
+    Função para exibir todos os usuários ativos no banco de dados.
+    """
     users = get_all_active_users(email)
 
     for user in users:
@@ -135,6 +167,9 @@ def show_all_active_users(email):
     return users
 
 def send_message_to_db(sender_email, receiver_email, message):
+    """
+    Função para enviar uma mensagem criptografada para o banco de dados.
+    """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
@@ -168,6 +203,9 @@ def send_message_to_db(sender_email, receiver_email, message):
     con.close()
 
 def get_sent_messages(email):
+    """
+    Função para buscar as mensagens enviadas por um usuário.	
+    """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
@@ -219,6 +257,9 @@ def get_sent_messages(email):
         print()
 
 def get_recived_messages(email):
+    """
+    Função para buscar as mensagens recebidas por um usuário.
+    """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 

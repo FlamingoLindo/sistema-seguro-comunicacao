@@ -1,7 +1,13 @@
+"""ENVIO DE MENSAGEM"""
+
 from src.utils import clear_screen
 from src.db_functions import show_all_active_users, get_user, send_message_to_db
 
 def send_message(email):
+    """
+    Função para enviar uma mensagem criptografada para outro usuário.
+    """
+
     clear_screen()
     print('Escolha um usuário para enviar a mensagem:\n')
     

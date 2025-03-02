@@ -1,8 +1,16 @@
+"""
+MENU
+"""
+
 from src.utils import clear_screen
 from src.user_actions import login, register
 from src.db_functions import initialize_database
 
 def logo():
+    """
+    FUNÇÃO PARA MOSTRAR O LOGO DO SISTEMA
+    """
+    
     print(u'\033[31m\033[5m\033[1m')
     print(r'''
       ___                    ___                    ___     
@@ -21,6 +29,10 @@ def logo():
     print(u'\033[41m\033[1m\033[4mSISTEMA SEGURO DE COMUNICAÇÃO\033[0m')
 
 def main_menu():
+    """
+    FUNÇÃO PARA MOSTRAR O MENU PRINCIPAL
+    """
+
     while True:
         logo()
         initialize_database()

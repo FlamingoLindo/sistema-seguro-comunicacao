@@ -1,4 +1,7 @@
-import os
+"""
+AÇÕES DO USUÁRIO
+"""
+
 import getpass
 import datetime
 import bcrypt
@@ -12,9 +15,17 @@ from src.db_functions import (register_user, get_user, update_token, attemp, get
 from src.load_key import secret_key
 
 def is_valid_email(email):
+    """
+    Função para verificar se o e-mail é válido.
+    """
+
     return "@" in email and ".com" in email
 
 def register():
+    """
+    Função para registrar um usuário no sistema.
+    """
+
     while True:
         username = input('Digite seu nome: ')
         if len(username) < 3:
@@ -47,6 +58,10 @@ def register():
     print(u"\033[1m\033[32mUsuário cadastrado com sucesso!\033[0m")
 
 def login():
+    """
+    Função para fazer login no sistema.
+    """
+
     while True:
         email = input('Digite seu e-mail: ')
         user = get_user(email)
@@ -83,6 +98,10 @@ def login():
             print(u'\033[1m\033[41mE-mail não cadastrado. Tente novamente.\033[0m')
 
 def validate_token(user_email):
+    """
+    Função para validar o token do usuário.
+    """
+
     token = get_user_token(user_email)
     if not token:
         clear_screen()
@@ -106,6 +125,10 @@ def validate_token(user_email):
     return True
 
 def actions(user_email):
+    """
+    Função para mostrar as ações disponíveis para o usuário.
+    """
+
     while True:
         if not validate_token(user_email):
             return
