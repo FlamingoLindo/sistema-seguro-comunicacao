@@ -1,0 +1,5 @@
+# Sim nós sabemos que nunca se deve fazer o uploado de arquivos .env para o repositório,
+# mas como este repositorio é apenas um exemplo, vamos adicionar o arquivo .env 
+# para que a execução do projeto seja mais simples.
+
+#.env
