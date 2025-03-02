@@ -4,7 +4,7 @@ import sqlite3
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 
-from src.data import secret_key
+from src.load_key import secret_key
 
 def initialize_database(db_name="sistema_segurança.db"):
     db_exists = os.path.exists(db_name)

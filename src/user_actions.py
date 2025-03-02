@@ -7,7 +7,7 @@ from jwt.exceptions import ExpiredSignatureError
 from src.utils import clear_screen
 from src.messages import send_message
 from src.db_functions import register_user, get_user, update_token, attemp, get_sent_messages, get_recived_messages
-from src.data import secret_key
+from src.load_key import secret_key
 
 def is_valid_email(email):
     return "@" in email and ".com" in email
@@ -80,6 +80,10 @@ def login():
         else:
             clear_screen()
             print(u'\033[1m\033[41mE-mail não cadastrado. Tente novamente.\033[0m')
+
+# DO
+def validate_token(token):
+    pass
 
 def actions(user_email):
     while True:
