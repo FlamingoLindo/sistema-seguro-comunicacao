@@ -7,7 +7,8 @@ from jwt.exceptions import ExpiredSignatureError
 
 from src.utils import clear_screen
 from src.messages import send_message
-from src.db_functions import register_user, get_user, update_token, attemp, get_sent_messages, get_recived_messages
+from src.db_functions import (register_user, get_user, update_token, attemp, get_sent_messages, 
+                              get_recived_messages, get_user_token)
 from src.load_key import secret_key
 
 def is_valid_email(email):
@@ -70,7 +71,6 @@ def login():
                 update_token(token, user_id)
 
                 clear_screen()
-                print(f'Olá, {username}!')
                 actions(email)
                 return email
             else:
@@ -82,23 +82,59 @@ def login():
             clear_screen()
             print(u'\033[1m\033[41mE-mail não cadastrado. Tente novamente.\033[0m')
 
+def validate_token(user_email):
+    token = get_user_token(user_email)
+    if not token:
+        clear_screen()
+        print(u'\033[1m\033[41mToken vazio, por favor faça o login novamente.\033[0m')
+        login()
+        return False
+    
+    try:
+        jwt.decode(token, secret_key, algorithms=["HS256"])
+    except ExpiredSignatureError:
+        clear_screen()
+        print(u'\033[1m\033[41mToken expirado, por favor faça o login novamente.\033[0m')
+        login()
+        return False
+    except jwt.DecodeError:
+        clear_screen()
+        print(u'\033[1m\033[41mToken inválido, por favor faça o login novamente.\033[0m')
+        login()
+        return False
+
+    return True
+
 def actions(user_email):
     while True:
+        if not validate_token(user_email):
+            return
+
         clear_screen()
         print('Qual ação você deseja realizar:\n1 - Enviar mensagem\n2 - Ver mensagens\n3 - Sair')
         action = input(u'\033[1m\033[33mInput: \033[0m')
         
         if action == '1':
+            if not validate_token(user_email):
+                return
             send_message(user_email)
             input("Pressione Enter para continuar...")
         elif action == '2':
+            if not validate_token(user_email):
+                return
+
             clear_screen()
             print('Ver mensagens:\n1 - Mensagens recebidas\n2 - Mensagens enviadas')
             subaction = input(u'\033[1m\033[33mInput: \033[0m')
+
             if subaction == '1':
+                if not validate_token(user_email):
+                    return
                 clear_screen()
                 get_recived_messages(user_email)
             elif subaction == '2':
+                if not validate_token(user_email):
+                    return
                 clear_screen()
                 get_sent_messages(user_email)
             else:

@@ -94,6 +94,19 @@ def attemp(email):
     con.commit()
     con.close()
 
+
+def get_user_token(email):
+    con = sqlite3.connect("sistema_segurança.db")
+    cur = con.cursor()
+
+    cur.execute("SELECT token FROM users WHERE email = ?", (email,))
+
+    token = cur.fetchone()[0]
+    
+    con.close()
+    
+    return token
+
 """
 MESSAGES
 """
