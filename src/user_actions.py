@@ -1,4 +1,5 @@
 import os
+import getpass
 import datetime
 import bcrypt
 import jwt
@@ -30,7 +31,7 @@ def register():
             print(u'\033[4m\033[31mO e-mail precisa ter "@" e ".com". Tente novamente.\033[0m')
     
     while True:
-        password = input('Digite sua senha: ')
+        password = getpass.getpass('Digite sua senha: ')
         if len(password) < 8:
             clear_screen()
             print(u'\033[4m\033[31mA senha deve ter no mínimo 8 caracteres. Tente novamente.\033[0m')  
@@ -57,7 +58,7 @@ def login():
                 print(u'\033[1m\033[41mEsta conta está bloqueada. Entre em contato com o suporte.\033[0m')
                 return
 
-            password = input('Digite sua senha: ')
+            password = getpass.getpass('Digite sua senha: ')
             if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
                 payload = {
                     "email": email,
@@ -80,10 +81,6 @@ def login():
         else:
             clear_screen()
             print(u'\033[1m\033[41mE-mail não cadastrado. Tente novamente.\033[0m')
-
-# DO
-def validate_token(token):
-    pass
 
 def actions(user_email):
     while True:
