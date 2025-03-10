@@ -25,6 +25,7 @@ def initialize_database(db_name="sistema_segurança.db"):
     if not db_exists:
         print(f"Criando banco de dados: '{db_name}'")
 
+        # Tabel de usuários
         cur.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,6 +38,7 @@ def initialize_database(db_name="sistema_segurança.db"):
             )
         ''')
 
+        # Tabela de mensagens
         cur.execute('''
             CREATE TABLE IF NOT EXISTS messages (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,6 +62,7 @@ def register_user(username, email, password):
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
+    # Insere o usuário no banco de dados
     cur.execute('''
         INSERT INTO users (username, email, password_hash)
         VALUES (?, ?, ?)
@@ -75,6 +78,7 @@ def get_user(email):
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
+    # Busca o usuário no banco de dados
     cur.execute('''
         SELECT id, username, password_hash, attempts, blocked FROM users
         WHERE email = ?
@@ -82,6 +86,7 @@ def get_user(email):
     
     user = cur.fetchone()
 
+    # Se o usuário não existir
     if not user:
         print("Usuário não encontrado, por favor tente novamente.\n")
 
@@ -97,6 +102,7 @@ def update_token(token, user_id):
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
+    # Atualiza o token do usuário
     cur.execute("UPDATE users SET token = ? WHERE id = ?", (token, user_id))
 
     con.commit()
@@ -108,8 +114,11 @@ def attemp(email):
     """
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
+
+    # Atualiza a quantidade de tentativas de login
     cur.execute("UPDATE users SET attempts = attempts + 1 WHERE email = ?", (email,))
     
+    # Se a quantidade de tentativas for maior ou igual a 5, bloqueia a conta
     att_amount = cur.execute("SELECT attempts FROM users WHERE email = ?", (email,)).fetchone()[0]
     if att_amount >= 5:
         cur.execute("UPDATE users SET blocked = TRUE WHERE email = ?", (email,))
@@ -125,6 +134,7 @@ def get_user_token(email):
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
+    # Busca o token do usuário
     cur.execute("SELECT token FROM users WHERE email = ?", (email,))
 
     token = cur.fetchone()[0]
@@ -144,6 +154,7 @@ def get_all_active_users(email):
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
     
+    # Busca todos os usuários ativos
     query = "SELECT id, username, email FROM users WHERE blocked = 0 AND email != ?"
     cur.execute(query, (email,))
     
@@ -157,7 +168,7 @@ def show_all_active_users(email):
     Função para exibir todos os usuários ativos no banco de dados.
     """
     users = get_all_active_users(email)
-
+    
     for user in users:
         print('-' * 10)
         print(f"Nome: {user[1]} \nE-mail: {user[2]}")
@@ -181,11 +192,17 @@ def send_message_to_db(sender_email, receiver_email, message):
     receiver = cur.fetchone()
 
     try:
+        # Criptografa a mensagem
         message_bytes = message.encode('utf-8')
+
+        # Adiciona padding na mensagem
         padder = padding.PKCS7(algorithms.AES.block_size).padder()
         padded_data = padder.update(message_bytes) + padder.finalize()
 
+        # Cria um vetor de inicialização
         iv = os.urandom(16)
+
+        # Cifra a mensagem
         cipher = Cipher(algorithms.AES(secret_key), modes.CBC(iv))
         encryptor = cipher.encryptor()
         encrypted_message = encryptor.update(padded_data) + encryptor.finalize()
@@ -193,7 +210,8 @@ def send_message_to_db(sender_email, receiver_email, message):
     except Exception as e:
         print('Erro ao criptografar a mensagem.')
         print(e)
-        
+    
+    # Insere a mensagem criptografada no banco de dados
     cur.execute('''
         INSERT INTO messages (sender_id, receiver_id, message_text, message_iv)
         VALUES (?, ?, ?, ?)
@@ -209,6 +227,7 @@ def get_sent_messages(email):
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
+    # Busca as mensagens enviadas
     query = '''
         SELECT sender.username AS sender_name,
                receiver.username AS receiver_name,
@@ -223,22 +242,27 @@ def get_sent_messages(email):
     cur.execute(query, (email,))
     cryptographed_messages = cur.fetchall()
 
+    # Se não houver mensagens enviadas
     if not cryptographed_messages:
         print("Nenhuma mensagem enviada.")
         con.close()
         return
     
+    # Descriptografa as mensagens
     messages = []
     for row in cryptographed_messages:
         sender_name, receiver_name, encrypted_message, message_iv = row
         try:
+            # Descriptografa a mensagem
             cipher = Cipher(algorithms.AES(secret_key), modes.CBC(message_iv))
             decryptor = cipher.decryptor()
             
+            # Remove o padding da mensagem
             padded_plaintext = decryptor.update(encrypted_message) + decryptor.finalize()
             unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
             plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
 
+            # Adiciona a mensagem descriptografada na lista
             messages.append((sender_name, receiver_name, encrypted_message, plaintext.decode('utf-8')))
         except Exception as e:
             print('Erro ao descriptografar a mensagem:')
@@ -246,6 +270,7 @@ def get_sent_messages(email):
 
     con.close()
 
+    # Exibe as mensagens
     print('Mensagens enviadas:')
     for msg in messages:
         sender_name, receiver_name, enc_message, dec_message = msg
@@ -263,6 +288,7 @@ def get_recived_messages(email):
     con = sqlite3.connect("sistema_segurança.db")
     cur = con.cursor()
 
+    # Busca as mensagens recebidas
     query = '''
         SELECT sender.username AS sender_name,
                receiver.username AS receiver_name,
@@ -274,25 +300,31 @@ def get_recived_messages(email):
         WHERE receiver.email = ?
     '''
     
+    # Busca as mensagens criptografadas
     cur.execute(query, (email,))
     cryptographed_messages = cur.fetchall()
 
+    # Se não houver mensagens recebidas
     if not cryptographed_messages:
         print("Nenhuma mensagem recebida.")
         con.close()
         return
     
+    # Descriptografa as mensagens
     messages = []
     for row in cryptographed_messages:
         sender_name, receiver_name, encrypted_message, message_iv = row
         try:
+            # Descriptografa a mensagem
             cipher = Cipher(algorithms.AES(secret_key), modes.CBC(message_iv))
             decryptor = cipher.decryptor()
             
+            # Remove o padding da mensagem
             padded_plaintext = decryptor.update(encrypted_message) + decryptor.finalize()
             unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
             plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
 
+            # Adiciona a mensagem descriptografada na lista
             messages.append((sender_name, receiver_name, encrypted_message, plaintext.decode('utf-8')))
         except Exception as e:
             print('Erro ao descriptografar a mensagem:')
@@ -300,6 +332,7 @@ def get_recived_messages(email):
 
     con.close()
 
+    # Exibe as mensagens
     print('Mensagens recebidas:')
     for msg in messages:
         sender_name, receiver_name, enc_message, dec_message = msg

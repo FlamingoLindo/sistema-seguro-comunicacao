@@ -11,14 +11,18 @@ def send_message(email):
     clear_screen()
     print('Escolha um usuário para enviar a mensagem:\n')
     
+    # Mostra todos os usuários ativos
     active_users = show_all_active_users(email)
     
+    # Se não houver usuários ativos
     if not active_users:
         print('Não há usuários disponíveis para enviar mensagens.')
         return
 
     while True:
         recipient_email = input('Digite o e-mail do usuário: ')
+
+        # Verifica se o e-mail é válido
         recipient = get_user(recipient_email)
 
         if recipient is None:
@@ -27,6 +31,7 @@ def send_message(email):
         
         message = input('Digite a mensagem: ')
 
+        # Envia a mensagem para o banco de dados
         send_message_to_db(email, recipient_email, message)
 
         print(f"Mensagem criptografada e enviada para {recipient_email}")
