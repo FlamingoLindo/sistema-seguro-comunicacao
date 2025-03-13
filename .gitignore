@@ -3,3 +3,4 @@
 # para que a execução do projeto seja mais simples.
 
 #.env
+app.log
