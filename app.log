@@ -1,0 +1,29 @@
+2025-03-12 21:36:07,880 - INFO - Inicializando o banco de dados: 'sistema_seguranca.db'
+2025-03-12 21:36:07,892 - INFO - Banco de dados criado com sucesso!
+2025-03-12 21:36:38,492 - INFO - CADASTRO: Username valido
+2025-03-12 21:36:42,359 - INFO - CADASTRO: Email valido
+2025-03-12 21:36:44,428 - INFO - CADASTRO: Senha valida
+2025-03-12 21:36:44,696 - INFO - Usuario 'vitor' registrado com sucesso.
+2025-03-12 21:36:44,706 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-12 21:36:50,939 - INFO - CADASTRO: Username valido
+2025-03-12 21:36:56,092 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-12 21:37:04,636 - INFO - CADASTRO: Username valido
+2025-03-12 21:37:06,788 - INFO - CADASTRO: Email valido
+2025-03-12 21:37:09,571 - INFO - CADASTRO: Senha valida
+2025-03-12 21:37:09,836 - INFO - Usuario 'lucas' registrado com sucesso.
+2025-03-12 21:37:09,847 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-12 21:37:13,665 - INFO - CADASTRO: Username valido
+2025-03-12 21:37:16,845 - INFO - CADASTRO: Email valido
+2025-03-12 21:37:19,583 - INFO - CADASTRO: Senha valida
+2025-03-12 21:37:19,849 - INFO - Usuario 'bryan' registrado com sucesso.
+2025-03-12 21:37:19,860 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-12 21:37:29,192 - INFO - CADASTRO: Username valido
+2025-03-12 21:37:32,056 - INFO - CADASTRO: Email valido
+2025-03-12 21:37:37,904 - INFO - CADASTRO: Senha valida
+2025-03-12 21:37:38,172 - INFO - Usuario 'carlos' registrado com sucesso.
+2025-03-12 21:37:38,183 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-12 21:37:46,168 - INFO - CADASTRO: Username valido
+2025-03-12 21:37:53,024 - INFO - CADASTRO: Email valido
+2025-03-12 21:37:55,691 - INFO - CADASTRO: Senha valida
+2025-03-12 21:37:55,958 - INFO - Usuario 'Master' registrado com sucesso.
+2025-03-12 21:37:55,969 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.

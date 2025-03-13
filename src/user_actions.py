@@ -2,60 +2,68 @@
 AÇÕES DO USUÁRIO
 """
 
+import logging
 import getpass
 import datetime
 import bcrypt
 import jwt
 from jwt.exceptions import ExpiredSignatureError
+from cerberus import Validator
+
+import logging_config
 
 from src.utils import clear_screen
 from src.messages import send_message
 from src.db_functions import (register_user, get_user, update_token, attemp, get_sent_messages, 
                               get_recived_messages, get_user_token)
 from src.load_key import secret_key
-
-def is_valid_email(email):
-    """
-    Função para verificar se o e-mail é válido.
-    Se ele possui "@" ou ".com".
-    """
-
-    return "@" in email and ".com" in email
+from src.schemas import register_schema
 
 def register():
     """
     Função para registrar um usuário no sistema.
     """
 
+    v = Validator(register_schema)
+
     while True:
         username = input('Digite seu nome: ')
-        # Verifica se o nome tem no mínimo 3 caracteres
-        if len(username) < 3:
-            clear_screen()
-            print(u'\033[4m\033[31mO nome deve ter no mínimo 3 caracteres. Tente novamente.\033[0m')
-        else:
+        if v.validate({'username': username}, update = True):
+            logging.info('CADASTRO: Username valido')
             break
-    
+        else:
+            clear_screen()
+            logging.error('CADASTRO: username invalido: %s', v.errors['username'][0])
+            print(u'\033[4m\033[31mO nome deve ter no mínimo 3 caracteres. Tente novamente.\033[0m')
+            
     while True:
         email = input('Digite seu e-mail: ')
-        # Verifica se o e-mail é válido
-        if is_valid_email(email):
+        if v.validate({'email': email}, update = True):
+            logging.info('CADASTRO: Email valido')
             break
         else:
             clear_screen()
+            logging.error('CADASTRO: Email invalido: %s', v.errors['email'][0])
             print(u'\033[4m\033[31mO e-mail precisa ter "@" e ".com". Tente novamente.\033[0m')
-    
+            
     while True:
         password = getpass.getpass('Digite sua senha: ')
-        # Verifica se a senha tem no mínimo 8 caracteres
-        if len(password) < 8:
-            clear_screen()
-            print(u'\033[4m\033[31mA senha deve ter no mínimo 8 caracteres. Tente novamente.\033[0m')  
-        else:
+        if v.validate({'password': password}, update = True):
+            logging.info('CADASTRO: Senha valida')
             break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: Senha invalida: %s', v.errors['password'][0])
+            print(u'\033[4m\033[31mA senha deve ter no mínimo 8 caracteres. Tente novamente.\033[0m')  
+            
     
     # Hash da senha
-    password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    try:
+        password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    except Exception as e:
+        logging.error('CADASTRO: Erro ao fazer hashing da senha: %s', e)
+        print(u'\033[1m\033[41mErro ao cadastrar usuário. Tente novamente.\033[0m')
+        return
     
     # Registra o usuário no banco de dados
     register_user(username, email, password)
@@ -74,7 +82,7 @@ def login():
         
         # Verifica se o e-mail está cadastrado
         if user:
-            user_id, username, hashed_password, attempts, blocked = user
+            user_id, username, hashed_password, attempts, role, blocked = user
             
             # Verifica se a conta está bloqueada
             if blocked:
@@ -95,18 +103,21 @@ def login():
 
                 # Atualiza o token no banco de dados
                 update_token(token, user_id)
-
+                logging.info(f'LOGIN: Usuario logado com sucesso: {email}')
                 clear_screen()
                 actions(email)
+
                 return email
             else:
                 clear_screen()
+                logging.error(f'LOGIN: Senha incorreta {email}')
                 print(u'\033[1m\033[41mSenha incorreta. Tente novamente.\033[0m')
                 # Atualiza a quantidade de tentativas de login
                 attemp(email)
                 
         else:
             clear_screen()
+            logging.error(f'LOGIN: Login com email nao cadastrado --> {email}')
             print(u'\033[1m\033[41mE-mail não cadastrado. Tente novamente.\033[0m')
 
 def validate_token(user_email):
@@ -118,6 +129,7 @@ def validate_token(user_email):
     token = get_user_token(user_email)
     if not token:
         clear_screen()
+        logging.error(f'VALIDATE TOKEN: Token vazio --> {user_email}')
         print(u'\033[1m\033[41mToken vazio, por favor faça o login novamente.\033[0m')
         login()
         return False
@@ -125,13 +137,16 @@ def validate_token(user_email):
     try:
         # Decodifica o token
         jwt.decode(token, secret_key, algorithms=["HS256"])
+        logging.info(f'VALIDATE TOKEN: Token valido --> {user_email}')
     except ExpiredSignatureError:
         clear_screen()
+        logging.error(f'VALIDATE TOKEN: Token expirado --> {user_email}')
         print(u'\033[1m\033[41mToken expirado, por favor faça o login novamente.\033[0m')
         login()
         return False
     except jwt.DecodeError:
         clear_screen()
+        logging.error(f'VALIDATE TOKEN: Token invalido --> {user_email}')
         print(u'\033[1m\033[41mToken inválido, por favor faça o login novamente.\033[0m')
         login()
         return False
@@ -143,6 +158,9 @@ def actions(user_email):
     Função para mostrar as ações disponíveis para o usuário.
     """
 
+    user = get_user(user_email)
+    user_role = user[3] if user else 'user'
+
     while True:
         # Valida o token
         if not validate_token(user_email):
@@ -150,6 +168,11 @@ def actions(user_email):
 
         clear_screen()
         print('Qual ação você deseja realizar:\n1 - Enviar mensagem\n2 - Ver mensagens\n3 - Sair')
+
+        if user_role == 'master':
+            logging.info('Usuario master acessou a plataforma')
+            print('4 - BANANA')
+
         action = input(u'\033[1m\033[33mInput: \033[0m')
         
         if action == '1':
@@ -180,9 +203,11 @@ def actions(user_email):
                 get_sent_messages(user_email)
             else:
                 print('Opção inválida.')
+                logging.error(f'Ação inválida no menu de mensagens --> {user_email}')
             input("Pressione Enter para continuar...")
         elif action == '3':
             break
         else:
             print('Opção inválida.')
+            logging.error(f'Ação inválida no menu principal --> {user_email}')
             input("Pressione Enter para continuar...")
