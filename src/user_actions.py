@@ -15,7 +15,7 @@ import logging_config
 from src.utils import clear_screen
 from src.messages import send_message
 from src.db_functions import (register_user, get_user, update_token, attemp, get_sent_messages, 
-                              get_recived_messages, get_user_token)
+                              get_recived_messages, get_user_token, delete_user)
 from src.load_key import secret_key
 from src.schemas import register_schema
 
@@ -167,11 +167,11 @@ def actions(user_email):
             return
 
         clear_screen()
-        print('Qual ação você deseja realizar:\n1 - Enviar mensagem\n2 - Ver mensagens\n3 - Sair')
+        print('Qual ação você deseja realizar:\n1 - Enviar mensagem\n2 - Ver mensagens\n3 - Alterar senha\n4 - Apagar conta\n5 - Sair')
 
         if user_role == 'master':
             logging.info('Usuario master acessou a plataforma')
-            print('4 - BANANA')
+            print('6 - Ver usuários bloqueados')
 
         action = input(u'\033[1m\033[33mInput: \033[0m')
         
@@ -205,7 +205,23 @@ def actions(user_email):
                 print('Opção inválida.')
                 logging.error(f'Ação inválida no menu de mensagens --> {user_email}')
             input("Pressione Enter para continuar...")
+        # TODO: Implementar as funções de alterar senha e apagar conta
         elif action == '3':
+            print('alterar senha')
+        elif action == '4':
+            clear_screen()
+            print('Você deseja apagar sua conta?')
+            print('1 - Sim\n2 - Não')
+            action = input(u'\033[1m\033[33mInput: \033[0m')
+            if action == '1':
+                delete_user(user_email)
+                print('Conta apagada com sucesso.')
+                input("Pressione Enter para continuar...")
+                break
+            else:
+                input("Pressione Enter para continuar...")
+            
+        elif action == '5':
             break
         else:
             print('Opção inválida.')

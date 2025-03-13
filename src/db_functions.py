@@ -185,6 +185,29 @@ def get_user_token(email):
         if con:
             con.close()
 
+def delete_user(email):
+    """
+    Funcao para deletar um usuario do banco de dados.
+    """
+    con = None
+    try:
+        con = sqlite3.connect("sistema_seguranca.db")
+        cur = con.cursor()
+        cur.execute("DELETE FROM users WHERE email = ?", (email,))
+        con.commit()
+        if cur.rowcount > 0:
+            logging.info("Usuario '%s' deletado com sucesso.", email)
+            return True
+        else:
+            logging.info("Nenhum usuario encontrado com o email '%s'.", email)
+            return False
+    except sqlite3.Error as e:
+        logging.error("Erro ao deletar usuario '%s': %s", email, e)
+        return False
+    finally:
+        if con:
+            con.close()
+
 
 """
 MESSAGES
