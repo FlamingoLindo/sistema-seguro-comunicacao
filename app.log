@@ -38,3 +38,105 @@
 2025-03-12 21:59:33,963 - INFO - VALIDATE TOKEN: Token valido --> deletar@gmail.com
 2025-03-12 21:59:39,225 - INFO - Usuario 'deletar@gmail.com' deletado com sucesso.
 2025-03-12 21:59:40,463 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:13:40,807 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:13:50,909 - INFO - CADASTRO: Username valido
+2025-03-13 12:13:55,149 - INFO - CADASTRO: Email valido
+2025-03-13 12:13:57,524 - INFO - CADASTRO: Senha valida
+2025-03-13 12:15:08,909 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:15:13,346 - INFO - CADASTRO: Username valido
+2025-03-13 12:15:14,709 - ERROR - CADASTRO: Email invalido: value does not match regex '.*@.*\.com'
+2025-03-13 12:15:17,705 - INFO - CADASTRO: Email valido
+2025-03-13 12:15:20,066 - INFO - CADASTRO: Senha valida
+2025-03-13 12:15:48,168 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:15:51,553 - INFO - CADASTRO: Username valido
+2025-03-13 12:15:54,442 - INFO - CADASTRO: Email valido
+2025-03-13 12:15:56,470 - INFO - CADASTRO: Senha valida
+2025-03-13 12:16:01,613 - ERROR - CADASTRO: cpf invalido: value does not match regex '\d{3}\.\d{3}\.\d{3}-\d{2}'
+2025-03-13 12:16:13,097 - INFO - CADASTRO: cpf valido
+2025-03-13 12:16:13,317 - INFO - Usuario 'abc' registrado com sucesso.
+2025-03-13 12:16:13,329 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:23:38,273 - INFO - Inicializando o banco de dados: 'sistema_seguranca.db'
+2025-03-13 12:23:38,285 - INFO - Banco de dados criado com sucesso!
+2025-03-13 12:23:46,396 - INFO - CADASTRO: Username valido
+2025-03-13 12:23:49,818 - INFO - CADASTRO: Email valido
+2025-03-13 12:23:52,065 - INFO - CADASTRO: Senha valida
+2025-03-13 12:24:04,687 - INFO - CADASTRO: cpf valido
+2025-03-13 12:24:52,637 - INFO - CADASTRO: phone valido
+2025-03-13 12:25:25,735 - INFO - CADASTRO: cep valido
+2025-03-13 12:25:46,580 - INFO - CADASTRO: street valido
+2025-03-13 12:25:48,425 - INFO - CADASTRO: number valido
+2025-03-13 12:25:51,356 - INFO - CADASTRO: complement valido
+2025-03-13 12:26:17,633 - INFO - CADASTRO: complement valido
+2025-03-13 12:26:19,658 - INFO - CADASTRO: city valido
+2025-03-13 12:26:20,929 - INFO - CADASTRO: state valido
+2025-03-13 12:26:21,150 - INFO - Usuario 'Vitor' registrado com sucesso.
+2025-03-13 12:26:21,161 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:30:20,035 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:30:24,721 - INFO - Usuario com email 'vitor@gmail.com' encontrado.
+2025-03-13 12:30:27,758 - INFO - Token atualizado para o usuario ID: 1
+2025-03-13 12:30:27,758 - INFO - LOGIN: Usuario logado com sucesso: vitor@gmail.com
+2025-03-13 12:30:27,771 - INFO - Usuario com email 'vitor@gmail.com' encontrado.
+2025-03-13 12:30:27,772 - INFO - Token recuperado para o usuario 'vitor@gmail.com'.
+2025-03-13 12:30:27,773 - INFO - VALIDATE TOKEN: Token valido --> vitor@gmail.com
+2025-03-13 12:30:35,252 - INFO - Token recuperado para o usuario 'vitor@gmail.com'.
+2025-03-13 12:30:35,252 - INFO - VALIDATE TOKEN: Token valido --> vitor@gmail.com
+2025-03-13 12:30:35,263 - INFO - Usuarios ativos recuperados (excluindo 'vitor@gmail.com').
+2025-03-13 12:30:35,264 - INFO - Exibidos todos os usuarios ativos (excluindo 'vitor@gmail.com').
+2025-03-13 12:30:41,553 - INFO - Token recuperado para o usuario 'vitor@gmail.com'.
+2025-03-13 12:30:41,554 - INFO - VALIDATE TOKEN: Token valido --> vitor@gmail.com
+2025-03-13 12:30:43,845 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:37:48,624 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:37:54,771 - INFO - Usuario com email 'abc' nao encontrado.
+2025-03-13 12:37:54,782 - ERROR - LOGIN: Login com email nao cadastrado --> abc
+2025-03-13 12:37:57,913 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:38:01,380 - INFO - CADASTRO: Username valido
+2025-03-13 12:38:08,133 - INFO - CADASTRO: Email valido
+2025-03-13 12:38:10,815 - INFO - CADASTRO: Senha valida
+2025-03-13 12:38:16,419 - INFO - CADASTRO: cpf valido
+2025-03-13 12:38:22,687 - INFO - CADASTRO: phone valido
+2025-03-13 12:38:30,642 - INFO - CADASTRO: cep valido
+2025-03-13 12:38:32,797 - INFO - CADASTRO: street valido
+2025-03-13 12:38:35,122 - INFO - CADASTRO: number valido
+2025-03-13 12:38:38,041 - INFO - CADASTRO: complement valido
+2025-03-13 12:38:39,695 - INFO - CADASTRO: city valido
+2025-03-13 12:38:40,866 - INFO - CADASTRO: state valido
+2025-03-13 12:38:41,082 - ERROR - Database error ao registrar o usuario 'abc': Incorrect number of bindings supplied. The current statement uses 12, and there are 3 supplied.
+2025-03-13 12:42:30,853 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:42:37,079 - INFO - CADASTRO: Username valido
+2025-03-13 12:42:41,199 - INFO - CADASTRO: Email valido
+2025-03-13 12:42:56,554 - INFO - CADASTRO: Senha valida
+2025-03-13 12:43:00,066 - INFO - CADASTRO: cpf valido
+2025-03-13 12:43:03,330 - INFO - CADASTRO: phone valido
+2025-03-13 12:43:13,599 - INFO - CADASTRO: cep valido
+2025-03-13 12:43:15,212 - INFO - CADASTRO: street valido
+2025-03-13 12:43:16,241 - INFO - CADASTRO: number valido
+2025-03-13 12:43:17,331 - INFO - CADASTRO: complement valido
+2025-03-13 12:43:18,861 - INFO - CADASTRO: city valido
+2025-03-13 12:43:19,850 - INFO - CADASTRO: state valido
+2025-03-13 12:48:12,349 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:48:17,130 - INFO - CADASTRO: Username valido
+2025-03-13 12:48:20,109 - INFO - CADASTRO: Email valido
+2025-03-13 12:48:22,141 - INFO - CADASTRO: Senha valida
+2025-03-13 12:48:26,433 - INFO - CADASTRO: cpf valido
+2025-03-13 12:48:29,266 - INFO - CADASTRO: phone valido
+2025-03-13 12:48:32,577 - INFO - CADASTRO: cep valido
+2025-03-13 12:48:34,232 - INFO - CADASTRO: street valido
+2025-03-13 12:48:34,986 - INFO - CADASTRO: number valido
+2025-03-13 12:48:36,414 - INFO - CADASTRO: complement valido
+2025-03-13 12:48:37,360 - INFO - CADASTRO: city valido
+2025-03-13 12:48:39,982 - INFO - CADASTRO: state valido
+2025-03-13 12:48:40,197 - ERROR - Database error ao registrar o usuario 'hasdja': Incorrect number of bindings supplied. The current statement uses 12, and there are 11 supplied.
+2025-03-13 12:49:43,056 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.
+2025-03-13 12:49:45,491 - INFO - CADASTRO: Username valido
+2025-03-13 12:49:48,187 - INFO - CADASTRO: Email valido
+2025-03-13 12:49:50,519 - INFO - CADASTRO: Senha valida
+2025-03-13 12:49:55,823 - INFO - CADASTRO: cpf valido
+2025-03-13 12:49:58,527 - INFO - CADASTRO: phone valido
+2025-03-13 12:50:14,224 - INFO - CADASTRO: cep valido
+2025-03-13 12:50:15,205 - INFO - CADASTRO: street valido
+2025-03-13 12:50:15,804 - INFO - CADASTRO: number valido
+2025-03-13 12:50:16,663 - INFO - CADASTRO: complement valido
+2025-03-13 12:50:17,441 - INFO - CADASTRO: city valido
+2025-03-13 12:50:18,798 - INFO - CADASTRO: state valido
+2025-03-13 12:50:19,019 - INFO - Usuario 'adad' registrado com sucesso.
+2025-03-13 12:50:19,032 - INFO - Banco de dados 'sistema_seguranca.db' ja existe.

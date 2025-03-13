@@ -10,7 +10,7 @@ def logo():
     """
     FUNÇÃO PARA MOSTRAR O LOGO DO SISTEMA
     """
-    
+    clear_screen()
     print(u'\033[31m\033[5m\033[1m')
     print(r'''
       ___                    ___                    ___     

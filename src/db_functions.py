@@ -37,8 +37,8 @@ def initialize_database(db_name="sistema_seguranca.db"):
                     username TEXT NOT NULL,
                     email TEXT NOT NULL,
                     password_hash TEXT NOT NULL,
-                    cpf TEXT,
-                    phone TEXT,
+                    cpf TEXT unique,
+                    phone TEXT unique,
                     cep TEXT,
                     street TEXT,
                     number TEXT,
@@ -77,7 +77,7 @@ def initialize_database(db_name="sistema_seguranca.db"):
             pass
 
 
-def register_user(username, email, password):
+def register_user(username, email, password, cpf, phone, cep, street, number, complement, city, state):
     """
     Funcao para registrar um usuario no banco de dados.
     """
@@ -86,9 +86,9 @@ def register_user(username, email, password):
         con = sqlite3.connect("sistema_seguranca.db")
         cur = con.cursor()
         cur.execute('''
-            INSERT INTO users (username, email, password_hash)
-            VALUES (?, ?, ?)
-        ''', (username, email, password))
+            INSERT INTO users (username, email, password_hash, cpf, phone, cep, street, number, complement, city, state)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (username, email, password, cpf, phone, cep, street, number, complement, city, state))
         con.commit()
         logging.info("Usuario '%s' registrado com sucesso.", username)
     except sqlite3.IntegrityError as e:

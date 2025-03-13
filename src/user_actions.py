@@ -55,6 +55,86 @@ def register():
             clear_screen()
             logging.error('CADASTRO: Senha invalida: %s', v.errors['password'][0])
             print(u'\033[4m\033[31mA senha deve ter no mínimo 8 caracteres. Tente novamente.\033[0m')  
+
+    while True:
+        cpf = input('Digite seu CPF (000.000.000-00): ')
+        if v.validate({'cpf': cpf}, update = True):
+            logging.info('CADASTRO: cpf valido')
+            break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: cpf invalido: %s', v.errors['cpf'][0])
+            print(u'\033[4m\033[31mO CPF deve seguir o formato "000.000.000-00". Tente novamente.\033[0m')
+
+    while True:
+        phone = input('Digite seu telefone (XX) XXXXX-XXXX: ')
+        if v.validate({'phone': phone}, update = True):
+            logging.info('CADASTRO: phone valido')
+            break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: phone invalido: %s', v.errors['phone'][0])
+            print(u'\033[4m\033[31mO número de telefone deve seguir o formato "(XX) XXXXX-XXXX". Tente novamente.\033[0m') 
+
+    while True:
+        cep = input('Digite seu CEP (00000-000): ')
+        if v.validate({'cep': cep}, update = True):
+            logging.info('CADASTRO: cep valido')
+            break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: cep invalido: %s', v.errors['cep'][0])
+            print(u'\033[4m\033[31mO CEP deve seguir o formato "00000-000". Tente novamente.\033[0m')  
+
+    while True:
+        street = input('Digite o nome da sua rua: ')
+        if v.validate({'street': street}, update = True):
+            logging.info('CADASTRO: street valido')
+            break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: street invalido: %s', v.errors['street'][0])
+            print(u'\033[4m\033[31mNome da rua inválido. Tente novamente.\033[0m') 
+
+    while True:
+        number = input('Digite o número: ')
+        if v.validate({'number': number}, update = True):
+            logging.info('CADASTRO: number valido')
+            break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: number invalido: %s', v.errors['number'][0])
+            print(u'\033[4m\033[31mNúmero inválido. Tente novamente.\033[0m') 
+
+    while True:
+        complement = input('Digite o complemento (opcional): ')
+        if v.validate({'complement': complement}, update = True):
+            logging.info('CADASTRO: complement valido')
+            break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: complement invalido: %s', v.errors['complement'][0])
+            print(u'\033[4m\033[31mComplemento inválido. Tente novamente.\033[0m')  
+
+    while True:
+        city = input('Digite a sua cidade: ')
+        if v.validate({'city': city}, update = True):
+            logging.info('CADASTRO: city valido')
+            break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: city invalido: %s', v.errors['city'][0])
+            print(u'\033[4m\033[31mCidade inválida. Tente novamente.\033[0m')  
+
+    while True:
+        state = input('Digite o seu estado (ex: SP): ')
+        if v.validate({'state': state}, update = True):
+            logging.info('CADASTRO: state valido')
+            break
+        else:
+            clear_screen()
+            logging.error('CADASTRO: state invalido: %s', v.errors['state'][0])
+            print(u'\033[4m\033[31mEstado inválido. Tente novamente.\033[0m')  
             
     
     # Hash da senha
@@ -66,7 +146,7 @@ def register():
         return
     
     # Registra o usuário no banco de dados
-    register_user(username, email, password)
+    register_user(username, email, password, cpf, phone, cep, street, number, complement, city, state)
     
     clear_screen()
     print(u"\033[1m\033[32mUsuário cadastrado com sucesso!\033[0m")
