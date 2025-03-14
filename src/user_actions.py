@@ -291,9 +291,10 @@ def actions(user_email):
                 print('Opção inválida.')
                 logging.error(f'Ação inválida no menu de mensagens --> {user_email}')
             input("Pressione Enter para continuar...")
-        # TODO: Implementar as funções de alterar senha
+
         elif action == '3':
             print('alterar senha')
+            
         elif action == '4':
             clear_screen()
             print('Você deseja apagar sua conta?')
