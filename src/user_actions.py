@@ -15,7 +15,8 @@ import logging_config
 from src.utils import clear_screen
 from src.messages import send_message
 from src.db_functions import (register_user, get_user, update_token, attemp, get_sent_messages, 
-                              get_recived_messages, get_user_token, delete_user)
+                              get_recived_messages, get_user_token, delete_user, get_all_users,
+                              get_all_blocked_users, reset_attempts, reset_user_login_attemp)
 from src.load_key import secret_key
 from src.schemas import register_schema
 
@@ -168,7 +169,8 @@ def login():
             if blocked:
                 clear_screen()
                 print(u'\033[1m\033[41mEsta conta está bloqueada. Entre em contato com o suporte.\033[0m')
-                return
+                input("Pressione Enter para continuar...")
+                break
 
             password = getpass.getpass('Digite sua senha: ')
             # Verifica se a senha está correta
@@ -180,6 +182,9 @@ def login():
                 
                 # Gera o token
                 token = jwt.encode(payload, secret_key, algorithm="HS256")
+
+                # Reseta a quantidade de tentativas de login
+                reset_attempts(email)
 
                 # Atualiza o token no banco de dados
                 update_token(token, user_id)
@@ -252,6 +257,7 @@ def actions(user_email):
         if user_role == 'master':
             logging.info('Usuario master acessou a plataforma')
             print('6 - Ver usuários bloqueados')
+            print('7 - Listar usuários')	
 
         action = input(u'\033[1m\033[33mInput: \033[0m')
         
@@ -285,7 +291,7 @@ def actions(user_email):
                 print('Opção inválida.')
                 logging.error(f'Ação inválida no menu de mensagens --> {user_email}')
             input("Pressione Enter para continuar...")
-        # TODO: Implementar as funções de alterar senha e apagar conta
+        # TODO: Implementar as funções de alterar senha
         elif action == '3':
             print('alterar senha')
         elif action == '4':
@@ -295,14 +301,39 @@ def actions(user_email):
             action = input(u'\033[1m\033[33mInput: \033[0m')
             if action == '1':
                 delete_user(user_email)
-                print('Conta apagada com sucesso.')
+                print(u'\033[1m\033[32mConta apagada com sucesso!\033[0m')
                 input("Pressione Enter para continuar...")
                 break
             else:
                 input("Pressione Enter para continuar...")
             
         elif action == '5':
+            # Sair
             break
+
+        elif action == '6' and user_role == 'master':
+            # Mostrar todos os usuários que estão com o acesso bloqueado
+            clear_screen()
+            get_all_blocked_users()
+
+            print('1 - Desbloquear usuário')
+            print('2 - Voltar')
+            subaction = input(u'\033[1m\033[33mInput: \033[0m')
+            if subaction == '1':
+                blocked_email = input('Digite o e-mail do usuário que deseja desbloquear: ')
+                reset_user_login_attemp(blocked_email)
+            elif subaction == '2':
+                pass
+            else:
+                print('Opção inválida.')
+                logging.error(f'Ação inválida no menu de usuários bloqueados --> {user_email}')
+            input("Pressione Enter para continuar...")
+            
+        elif action == '7' and user_role == 'master':
+            # Mostrar todos os usuários cadastrados na plataforma
+            clear_screen()
+            get_all_users()
+            input("Pressione Enter para continuar...")
         else:
             print('Opção inválida.')
             logging.error(f'Ação inválida no menu principal --> {user_email}')

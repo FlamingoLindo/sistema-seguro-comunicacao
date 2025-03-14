@@ -76,7 +76,6 @@ def initialize_database(db_name="sistema_seguranca.db"):
         except Exception:
             pass
 
-
 def register_user(username, email, password, cpf, phone, cep, street, number, complement, city, state):
     """
     Funcao para registrar um usuario no banco de dados.
@@ -99,7 +98,6 @@ def register_user(username, email, password, cpf, phone, cep, street, number, co
     finally:
         if con:
             con.close()
-
 
 def get_user(email):
     """
@@ -127,6 +125,58 @@ def get_user(email):
         if con:
             con.close()
 
+def get_all_users():
+    """
+    Função para mostrar todos os usuários cadastrados no banco de dados.
+    """
+    con = None
+    try:
+        con = sqlite3.connect("sistema_seguranca.db")
+        cur = con.cursor()
+        cur.execute("SELECT * FROM users")
+        users = cur.fetchall()
+        logging.info("Todos os usuarios recuperados.")
+        
+        for user in users:
+            print('-' * 10)
+            print(f"ID: {user[0]}\nNome: {user[1]}\nEmail: {user[2]}\nCPF: {user[4]}\nTelefone: {user[5]}\nCEP: {user[6]}\nRua: {user[7]}\nNúmero: {user[8]}\nComplemento: {user[9]}\nCidade: {user[10]}\nEstado: {user[11]}")
+            print('-' * 10)
+            print()
+
+    except sqlite3.Error as e:
+        logging.error("Erro ao buscar todos os usuários: %s", e)
+        return None
+    finally:
+        if con:
+            con.close()
+
+def get_all_blocked_users():
+    """
+    Função para mostrar todos os usuários bloqueados no banco de dados.
+    """
+    con = None
+    try:
+        con = sqlite3.connect("sistema_seguranca.db")
+        cur = con.cursor()
+        cur.execute("SELECT * FROM users WHERE blocked = 1")
+        users = cur.fetchall()
+        logging.info("Todos os usuarios bloqueados recuperados.")
+        
+        if users:
+            for user in users:
+                print('═─═' * 10)
+                print(f"ID: {user[0]}\nNome: {user[1]}\nEmail: {user[2]}\nCPF: {user[4]}\nTelefone: {user[5]}\nCEP: {user[6]}\nRua: {user[7]}\nNúmero: {user[8]}\nComplemento: {user[9]}\nCidade: {user[10]}\nEstado: {user[11]}")
+                print('═─═' * 10)
+                print()
+        else:
+            print('Não há usuários bloqueados.')
+
+    except sqlite3.Error as e:
+        logging.error("Erro ao buscar todos os usuários bloqueados: %s", e)
+        return None
+    finally:
+        if con:
+            con.close()
 
 def update_token(token, user_id):
     """
@@ -144,7 +194,6 @@ def update_token(token, user_id):
     finally:
         if con:
             con.close()
-
 
 def attemp(email):
     """
@@ -168,6 +217,22 @@ def attemp(email):
         if con:
             con.close()
 
+def reset_attempts(email):
+    """
+    Funcao para resetar a quantidade de tentativas de login de um usuario.
+    """
+    con = None
+    try:
+        con = sqlite3.connect("sistema_seguranca.db")
+        cur = con.cursor()
+        cur.execute("UPDATE users SET attempts = 0 WHERE email = ?", (email,))
+        con.commit()
+        logging.info("Tentativas resetadas para o usuario '%s'.", email)
+    except sqlite3.Error as e:
+        logging.error("Erro ao resetar tentativas para o usuario '%s': %s", email, e)
+    finally:
+        if con:
+            con.close()
 
 def get_user_token(email):
     """
@@ -216,6 +281,23 @@ def delete_user(email):
         if con:
             con.close()
 
+def reset_user_login_attemp(blocked_email):
+    """
+    Funcao para resetar as tentativas de login de um usuario.
+    """
+    con = None
+    try:
+        con = sqlite3.connect("sistema_seguranca.db")
+        cur = con.cursor()
+        cur.execute("UPDATE users SET attempts = 0, blocked = 0 WHERE email = ?", (blocked_email,))
+        con.commit()
+        print(u'\033[1m\033[32mUsuário desbloqueado!\033[0m')
+        logging.info("Tentativas de login resetadas para o usuario '%s'.", blocked_email)
+    except sqlite3.Error as e:
+        logging.error("Erro ao resetar tentativas de login para o usuario '%s': %s", blocked_email, e)
+    finally:
+        if con:
+            con.close()
 
 """
 MESSAGES
@@ -241,7 +323,6 @@ def get_all_active_users(email):
         if con:
             con.close()
 
-
 def show_all_active_users(email):
     """
     Funcao para exibir todos os usuarios ativos no banco de dados.
@@ -249,16 +330,14 @@ def show_all_active_users(email):
     try:
         users = get_all_active_users(email)
         for user in users:
-            print('-' * 10)
+            print('═─═' * 10)
             print(f"Nome: {user[1]} \nEmail: {user[2]}")
-            print('-' * 10)
-            print()
+            print('═─═' * 10)
         logging.info("Exibidos todos os usuarios ativos (excluindo '%s').", email)
         return users
     except Exception as e:
         logging.error("Erro ao exibir usuarios ativos: %s", e)
         return []
-
 
 def send_message_to_db(sender_email, receiver_email, message):
     """
@@ -306,7 +385,6 @@ def send_message_to_db(sender_email, receiver_email, message):
     finally:
         if con:
             con.close()
-
 
 def get_sent_messages(email):
     """
@@ -358,13 +436,11 @@ def get_sent_messages(email):
     print("Mensagens enviadas:")
     for msg in messages:
         sender_name, receiver_name, enc_message, dec_message = msg
-        print('-' * 10)
+        print('═─═' * 10)
         print(f"De: {sender_name}\nPara: {receiver_name}")
         print(f"Mensagem criptografada (bytes): {enc_message}")
         print(f"Mensagem descriptografada: {dec_message}")
-        print('-' * 10)
-        print()
-
+        print('═─═' * 10)
 
 def get_recived_messages(email):
     """
@@ -416,9 +492,8 @@ def get_recived_messages(email):
     print("Mensagens recebidas:")
     for msg in messages:
         sender_name, receiver_name, enc_message, dec_message = msg
-        print('-' * 10)
+        print('═─═' * 10)
         print(f"De: {sender_name}")
         print(f"Mensagem criptografada (bytes): {enc_message}")
         print(f"Mensagem descriptografada: {dec_message}")
-        print('-' * 10)
-        print()
+        print('═─═' * 10)

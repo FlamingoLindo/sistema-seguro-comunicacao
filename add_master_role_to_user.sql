@@ -1,4 +1,4 @@
 -- SQLite
 UPDATE users
-SET role = 'master'
-WHERE id = 5;
+SET attempts = 0
+WHERE id = 2;
