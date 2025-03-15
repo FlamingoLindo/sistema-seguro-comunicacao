@@ -5,81 +5,83 @@ title: Fluxograma SSC
 ---
 
 flowchart TD
-    Start([Início]) --> login{Realizar login?}
-    login -- Sim --> action[Escolher ação]
-    login -- Não --> End([Fim])
+    Start([Início]) --> choiceLogin{Já possui login?}
+    choiceLogin -- Sim --> login[Login]
+    choiceLogin -- Não --> register[Cadastro]
+    register --> login
 
-    action --> msg[Enviar mensagem]
-    action --> verMsg[Ver mensagens]
-    action --> changePwd[Alterar senha]
-    action --> deleteAcc[Apagar conta]
-    action --> logout[Sair]
-    action --> blocked[Ver usuários bloqueados]
-    action --> listUsers[Listar usuários]
-
+    login --> action[Menu de Ações]
+    
+    %% Ações Gerais
+    action --> sendMsgOpt[Enviar mensagem]
+    action --> verMsgOpt[Ver mensagens]
+    action --> changePwdOpt[Alterar senha]
+    action --> deleteAccOpt[Apagar conta]
+    action --> exitOpt[Sair]
+    
+    %% Ações para Master
+    action -- "Se master" --> blockedOpt[Ver usuários bloqueados]
+    action -- "Se master" --> listUsersOpt[Listar usuários]
+    
     %% Ramo Enviar Mensagem
-    msg --> listActive[Listar todos os usuários ativos]
+    sendMsgOpt --> listActive[Listar usuários ativos]
     listActive --> chooseUser[Escolher usuário recebedor]
     chooseUser --> typeMsg[Digitar mensagem]
-    typeMsg --> encrypt[Criptografar mensagem]
-    encrypt --> sendMsg[Enviar mensagem]
+    typeMsg --> encryptMsg[Criptografar mensagem]
+    encryptMsg --> sendMsg[Enviar mensagem para o BD]
     sendMsg --> action
 
-    %% Ramo Ver Mensagens - Recebidas
-    verMsg --> rec[Mostrar mensagens recebidas]
-    rec --> recCheck{Há mensagens recebidas?}
-    recCheck -- Sim --> recDecrypt[Descriptografar mensagens]
-    recDecrypt --> showRec[Mostrar mensagens]
+    %% Ramo Ver Mensagens
+    verMsgOpt --> selectMsgType{1 - Recebidas<br>2 - Enviadas}
+    selectMsgType -- Recebidas --> recMsg[Buscar mensagens recebidas]
+    recMsg --> recCheck{Há mensagens?}
+    recCheck -- Sim --> decryptRec[Descriptografar mensagens]
+    decryptRec --> showRec[Mostrar mensagens recebidas]
     showRec --> action
-    recCheck -- Não --> noRec[Mostrar aviso de nenhuma mensagem recebida]
+    recCheck -- Não --> noRec[Exibir aviso de nenhuma mensagem]
     noRec --> action
-
-    %% Ramo Ver Mensagens - Enviadas
-    verMsg --> sent[Mostrar mensagens enviadas]
-    sent --> sentCheck{Há mensagens enviadas?}
-    sentCheck -- Sim --> sentDecrypt[Descriptografar mensagens]
-    sentDecrypt --> showSent[Mostrar mensagens]
+    
+    selectMsgType -- Enviadas --> sentMsg[Buscar mensagens enviadas]
+    sentMsg --> sentCheck{Há mensagens?}
+    sentCheck -- Sim --> decryptSent[Descriptografar mensagens]
+    decryptSent --> showSent[Mostrar mensagens enviadas]
     showSent --> action
-    sentCheck -- Não --> noSent[Mostrar aviso de nenhuma mensagem enviada]
+    sentCheck -- Não --> noSent[Exibir aviso de nenhuma mensagem]
     noSent --> action
 
     %% Ramo Alterar Senha
-    changePwd --> pwdConfirm{Deseja alterar a senha atual?}
-    pwdConfirm -- Não --> action
-    pwdConfirm -- Sim --> currentPwd[Digitar senha atual]
-    currentPwd --> newPwd[Digitar nova senha]
-    newPwd --> confirmPwd[Digitar confirmação de senha]
+    changePwdOpt --> newPwd[Digitar nova senha]
+    newPwd --> confirmPwd[Confirmar nova senha]
     confirmPwd --> sameCheck{Nova senha é igual à senha atual?}
-    sameCheck -- Sim --> error[Não é permitido atualizar para a mesma senha]
-    error --> action
-    sameCheck -- Não --> hash[Fazer hashing da nova senha]
-    hash --> savePwd[Salvar nova senha]
+    sameCheck -- Sim --> pwdError[Exibir erro: Senha igual à atual]
+    pwdError --> action
+    sameCheck -- Não --> hashPwd[Fazer hashing da nova senha]
+    hashPwd --> savePwd[Salvar nova senha no BD]
     savePwd --> action
 
     %% Ramo Apagar Conta
-    deleteAcc --> delConfirm{Deletar conta?}
-    delConfirm -- Sim --> delAcc[Conta deletada]
-    delAcc --> End
+    deleteAccOpt --> delConfirm{Confirma apagar conta?}
+    delConfirm -- Sim --> delAcc[Deletar conta e encerrar sessão]
+    delAcc --> End([Fim])
     delConfirm -- Não --> action
 
     %% Ramo Sair
-    logout --> exitConfirm{Deseja sair da plataforma?}
+    exitOpt --> exitConfirm{Deseja realmente sair?}
     exitConfirm -- Sim --> End
     exitConfirm -- Não --> action
 
-    %% Ramo Usuários Bloqueados
-    blocked --> unblockConfirm{Deseja desbloquear usuário?}
-    unblockConfirm -- Não --> action
-    unblockConfirm -- Sim --> checkBlocked{Há usuários bloqueados?}
+    %% Ramo Usuários Bloqueados (Master)
+    blockedOpt --> checkBlocked{Há usuários bloqueados?}
     checkBlocked -- Não --> action
     checkBlocked -- Sim --> showBlocked[Mostrar usuários bloqueados]
-    showBlocked --> inputEmail[Digitar e-mail do usuário bloqueado]
-    inputEmail --> unblocked[Usuário desbloqueado]
-    unblocked --> action
+    showBlocked --> inputBlocked[Digitar e-mail do usuário a desbloquear]
+    inputBlocked --> unblock[Desbloquear usuário]
+    unblock --> action
 
-    %% Ramo Listar Usuários
-    listUsers --> showUsers[Mostrar usuários cadastrados]
+    %% Ramo Listar Usuários (Master)
+    listUsersOpt --> showUsers[Mostrar todos os usuários]
     showUsers --> action
+
 
 
     

@@ -16,7 +16,8 @@ from src.utils import clear_screen
 from src.messages import send_message
 from src.db_functions import (register_user, get_user, update_token, attemp, get_sent_messages, 
                               get_recived_messages, get_user_token, delete_user, get_all_users,
-                              get_all_blocked_users, reset_attempts, reset_user_login_attemp)
+                              get_all_blocked_users, reset_attempts, reset_user_login_attemp,
+                              update_password)
 from src.load_key import secret_key
 from src.schemas import register_schema
 
@@ -293,7 +294,10 @@ def actions(user_email):
             input("Pressione Enter para continuar...")
 
         elif action == '3':
-            print('alterar senha')
+            clear_screen()
+            new_password = getpass.getpass('Digite a nova senha: ')
+            password_confirmation = getpass.getpass('Confirme a nova senha: ')
+            update_password(user_email, new_password, password_confirmation)
             
         elif action == '4':
             clear_screen()
@@ -323,12 +327,12 @@ def actions(user_email):
             if subaction == '1':
                 blocked_email = input('Digite o e-mail do usuário que deseja desbloquear: ')
                 reset_user_login_attemp(blocked_email)
+                input("Pressione Enter para continuar...")
             elif subaction == '2':
                 pass
             else:
                 print('Opção inválida.')
                 logging.error(f'Ação inválida no menu de usuários bloqueados --> {user_email}')
-            input("Pressione Enter para continuar...")
             
         elif action == '7' and user_role == 'master':
             # Mostrar todos os usuários cadastrados na plataforma

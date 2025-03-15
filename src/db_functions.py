@@ -7,12 +7,15 @@ import logging
 import os
 import sqlite3
 
+import bcrypt
+
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 
 import logging_config
 
 from src.load_key import secret_key
+from src.utils import anonimizar_dados
 
 
 def initialize_database(db_name="sistema_seguranca.db"):
@@ -80,6 +83,9 @@ def register_user(username, email, password, cpf, phone, cep, street, number, co
     """
     Funcao para registrar um usuario no banco de dados.
     """
+    formated_email = email.lower()
+    cpf_anon, phone_anon = anonimizar_dados(cpf, phone)
+
     con = None
     try:
         con = sqlite3.connect("sistema_seguranca.db")
@@ -87,11 +93,14 @@ def register_user(username, email, password, cpf, phone, cep, street, number, co
         cur.execute('''
             INSERT INTO users (username, email, password_hash, cpf, phone, cep, street, number, complement, city, state)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (username, email, password, cpf, phone, cep, street, number, complement, city, state))
+        ''', (username, formated_email, password, cpf_anon, phone_anon, cep, street, number, complement, city, state))
         con.commit()
         logging.info("Usuario '%s' registrado com sucesso.", username)
     except sqlite3.IntegrityError as e:
-        logging.error("Integrity error ao registrar o usuario '%s': %s", username, e)
+        logging.error("CADASTRO: Cadastro com dados já cadastrados '%s': %s", username, e)
+        print(u'\033[4m\033[31Dados já cadastrados. Verifique seus dados e tente novamente.\033[0m')
+        input('Pressione ENTER para continuar...')
+        return False
     except sqlite3.Error as e:
         logging.error("Database error ao registrar o usuario '%s': %s", username, e)
         raise
@@ -138,9 +147,9 @@ def get_all_users():
         logging.info("Todos os usuarios recuperados.")
         
         for user in users:
-            print('-' * 10)
+            print('═─═' * 10)
             print(f"ID: {user[0]}\nNome: {user[1]}\nEmail: {user[2]}\nCPF: {user[4]}\nTelefone: {user[5]}\nCEP: {user[6]}\nRua: {user[7]}\nNúmero: {user[8]}\nComplemento: {user[9]}\nCidade: {user[10]}\nEstado: {user[11]}")
-            print('-' * 10)
+            print('═─═' * 10)
             print()
 
     except sqlite3.Error as e:
@@ -273,6 +282,7 @@ def delete_user(email):
             return True
         else:
             logging.info("Nenhum usuario encontrado com o email '%s'.", email)
+            print(f"Nenhum usuario encontrado com o email '{email}'.")
             return False
     except sqlite3.Error as e:
         logging.error("Erro ao deletar usuario '%s': %s", email, e)
@@ -291,10 +301,56 @@ def reset_user_login_attemp(blocked_email):
         cur = con.cursor()
         cur.execute("UPDATE users SET attempts = 0, blocked = 0 WHERE email = ?", (blocked_email,))
         con.commit()
-        print(u'\033[1m\033[32mUsuário desbloqueado!\033[0m')
-        logging.info("Tentativas de login resetadas para o usuario '%s'.", blocked_email)
+        if cur.rowcount > 0:
+            print(u'\033[1m\033[32mUsuário desbloqueado!\033[0m')
+            logging.info("Tentativas de login resetadas para o usuario '%s'.", blocked_email)
+        else:
+            logging.info("Nenhum usuario encontrado com o email '%s'.", blocked_email)
+            print(f"Nenhum usuario encontrado com o email '{blocked_email}'.")
+            return False
     except sqlite3.Error as e:
         logging.error("Erro ao resetar tentativas de login para o usuario '%s': %s", blocked_email, e)
+    finally:
+        if con:
+            con.close()
+
+def update_password(user_email, new_password, password_confirmation):
+    """
+    Funcao para atualizar a senha de um usuario no banco de dados.
+    """
+    if new_password != password_confirmation:
+        print("A nova senha e a confirmação não coincidem.")
+        input('Pressione ENTER para continuar...')
+        return False
+    
+    con = None
+    try:
+        con = sqlite3.connect("sistema_seguranca.db")
+        cur = con.cursor()
+        
+        current_password_hash = cur.execute("SELECT password_hash FROM users WHERE email = ?", (user_email,)).fetchone()[0]
+        
+        if bcrypt.checkpw(new_password.encode('utf-8'), current_password_hash):
+            print("A nova senha não pode ser igual a senha atual.")
+            input('Pressione ENTER para continuar...')
+            return False
+        
+        hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+        
+        cur.execute("UPDATE users SET password_hash = ? WHERE email = ?", (hashed_password, user_email))
+        con.commit()
+        
+        if cur.rowcount > 0:
+            logging.info("Senha atualizada com sucesso para o usuario '%s'.", user_email)
+            print(u'\033[1m\033[32mSenha atualizada com sucesso!\033[0m')
+            input('Pressione ENTER para continuar...')
+            return True
+        else:
+            logging.info("Nenhum usuario encontrado com o email '%s'.", user_email)
+            raise ValueError(f"Nenhum usuario encontrado com o email '{user_email}'.")
+    except sqlite3.Error as e:
+        logging.error("Erro ao atualizar a senha para o usuario '%s': %s", user_email, e)
+        return False
     finally:
         if con:
             con.close()

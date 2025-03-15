@@ -1,9 +1,9 @@
 register_schema = {
     'username': {
-        'type': 'string', 'minlength': 3, 'maxlength': 20, 'required': True
+        'type': 'string', 'minlength': 3, 'maxlength': 50, 'required': True
     },
     'password': {
-        'type': 'string', 'minlength': 8, 'maxlength': 20, 'required': True
+        'type': 'string', 'minlength': 8, 'maxlength': 50, 'required': True
     },
     'email': {
         'type': 'string', 'regex': r'.*@.*\.com', 'required': True
@@ -30,7 +30,9 @@ register_schema = {
         'type': 'string', 'maxlength': 50, 'required': True
     },
     'state': {
-        'type': 'string', 'regex': r'^[A-Z]{2}$', 'required': True
+        'type': 'string', 'regex': r'^[A-Z]{2}$', 
+        'allowed': ['AC','AL','AP','AM','BA','CE','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'], 
+        'required': True
     },
     'role': {
         'type': 'string', 'allowed': ['user', 'master'], 'default': 'user'
