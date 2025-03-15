@@ -1,36 +1,86 @@
 ```mermaid
 
 ---
-title: Fluxograma
+title: Fluxograma SSC
 ---
 
 flowchart TD
-    Inicio(["Início"]) --> id1{Realizar login?}
+    Start([Início]) --> login{Realizar login?}
+    login -- Sim --> action[Escolher ação]
+    login -- Não --> End([Fim])
 
-    id1 --> |Sim| Ação
-    id1 --> |Não| Fim(["Fim"])
+    action --> msg[Enviar mensagem]
+    action --> verMsg[Ver mensagens]
+    action --> changePwd[Alterar senha]
+    action --> deleteAcc[Apagar conta]
+    action --> logout[Sair]
+    action --> blocked[Ver usuários bloqueados]
+    action --> listUsers[Listar usuários]
 
-    Ação{{Escolher ação}} --> id2[Enviar mensagem]
-    Ação --> id3[Ver mensagens]
-    Ação --> id4[Alterar senha]
-    Ação --> id5[Apagar conta]
-    Ação --> id6[Sair]
-    Ação --> id7[Ver usuários bloqueados]
-    Ação --> id8[Listar usuários]
+    %% Ramo Enviar Mensagem
+    msg --> listActive[Listar todos os usuários ativos]
+    listActive --> chooseUser[Escolher usuário recebedor]
+    chooseUser --> typeMsg[Digitar mensagem]
+    typeMsg --> encrypt[Criptografar mensagem]
+    encrypt --> sendMsg[Enviar mensagem]
+    sendMsg --> action
 
-    id2 --> id9[Listar todos os usuários ativos]
-    id9 --> id10[Escolher usuário recebedor]
-    id10 --> id11[Digitar mensagem]
-    id11 --> id12[Criptografar mensgem]
-    id12 --> id13[Enviar menagem]
-    
-    id13 --> Ação
-    id3 --> Ação
-    id4 --> Ação
-    id5 --> Fim
-    id6 --> Fim
-    id7 --> Ação
-    id8 --> Ação
+    %% Ramo Ver Mensagens - Recebidas
+    verMsg --> rec[Mostrar mensagens recebidas]
+    rec --> recCheck{Há mensagens recebidas?}
+    recCheck -- Sim --> recDecrypt[Descriptografar mensagens]
+    recDecrypt --> showRec[Mostrar mensagens]
+    showRec --> action
+    recCheck -- Não --> noRec[Mostrar aviso de nenhuma mensagem recebida]
+    noRec --> action
+
+    %% Ramo Ver Mensagens - Enviadas
+    verMsg --> sent[Mostrar mensagens enviadas]
+    sent --> sentCheck{Há mensagens enviadas?}
+    sentCheck -- Sim --> sentDecrypt[Descriptografar mensagens]
+    sentDecrypt --> showSent[Mostrar mensagens]
+    showSent --> action
+    sentCheck -- Não --> noSent[Mostrar aviso de nenhuma mensagem enviada]
+    noSent --> action
+
+    %% Ramo Alterar Senha
+    changePwd --> pwdConfirm{Deseja alterar a senha atual?}
+    pwdConfirm -- Não --> action
+    pwdConfirm -- Sim --> currentPwd[Digitar senha atual]
+    currentPwd --> newPwd[Digitar nova senha]
+    newPwd --> confirmPwd[Digitar confirmação de senha]
+    confirmPwd --> sameCheck{Nova senha é igual à senha atual?}
+    sameCheck -- Sim --> error[Não é permitido atualizar para a mesma senha]
+    error --> action
+    sameCheck -- Não --> hash[Fazer hashing da nova senha]
+    hash --> savePwd[Salvar nova senha]
+    savePwd --> action
+
+    %% Ramo Apagar Conta
+    deleteAcc --> delConfirm{Deletar conta?}
+    delConfirm -- Sim --> delAcc[Conta deletada]
+    delAcc --> End
+    delConfirm -- Não --> action
+
+    %% Ramo Sair
+    logout --> exitConfirm{Deseja sair da plataforma?}
+    exitConfirm -- Sim --> End
+    exitConfirm -- Não --> action
+
+    %% Ramo Usuários Bloqueados
+    blocked --> unblockConfirm{Deseja desbloquear usuário?}
+    unblockConfirm -- Não --> action
+    unblockConfirm -- Sim --> checkBlocked{Há usuários bloqueados?}
+    checkBlocked -- Não --> action
+    checkBlocked -- Sim --> showBlocked[Mostrar usuários bloqueados]
+    showBlocked --> inputEmail[Digitar e-mail do usuário bloqueado]
+    inputEmail --> unblocked[Usuário desbloqueado]
+    unblocked --> action
+
+    %% Ramo Listar Usuários
+    listUsers --> showUsers[Mostrar usuários cadastrados]
+    showUsers --> action
+
 
     
 
